@@ -1,28 +1,44 @@
 ﻿
+using Design_Patterns_Assignment.Repository.Models;
 using System;
 
 namespace Design_Patterns_Assignment.Repository
 {
     internal static class Repository
     {
-        internal static IDbContext Database { get; private set; } = new SimulatedDatabase();
+        internal static IDbRepository Database { get; private set; } = new DbRepository();
 
+        // Using firstRun to simulate switching repository to show that pattern is working as intended
         internal static void Run(bool firstRun = true)
         {
             if (firstRun) Console.WriteLine("-- Repository --");
+            var data = Database.GetDataset();
+            Console.WriteLine($"- {data} -");
 
-            Console.WriteLine($"- {Database.Name} -");
-            var data = Database.Load("Dataset A");
-            var customer = Database.Load("From Table Customer Where Name==Steve");
-            var animal = Database.Load("From Table Animal Where Owner==Steve");
+            Animal animal;
+            Customer customer = Database.GetCustomer("steve");
+            if (customer != null)
+            {
+                animal = Database.GetAnimal(customer);
+                if (animal == null)
+                {
+                    Console.WriteLine($"{customer.Name} has no animals.");
+                }
+                else
+                {
+                    Database.SaveAnimal(animal);
+                }
 
-            Database.Save(data);
-            Database.Save(customer);
-            Database.Save(animal);
+                Database.SaveCustomer(customer);
+            }
+            else
+            {
+                Console.WriteLine("Customer not found.");
+            }
 
             if (firstRun)
             {
-                Database = new SimulatedAPI();
+                Database = new DbRepository2();
                 Run(false);
             }
 
