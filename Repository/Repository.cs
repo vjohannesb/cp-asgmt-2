@@ -19,14 +19,16 @@ namespace Design_Patterns_Assignment.Repository
             Customer customer = Database.GetCustomer("steve");
             if (customer != null)
             {
+                Console.WriteLine($"{customer.Name} found!");
                 animal = Database.GetAnimal(customer);
-                if (animal == null)
+                if (animal != null)
                 {
-                    Console.WriteLine($"{customer.Name} has no animals.");
+                    Console.WriteLine($"{customer.Name} owns {animal.Name}.");
+                    Database.SaveAnimal(animal);
                 }
                 else
                 {
-                    Database.SaveAnimal(animal);
+                    Console.WriteLine($"{customer.Name} has no animals.");
                 }
 
                 Database.SaveCustomer(customer);
