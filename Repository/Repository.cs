@@ -6,43 +6,32 @@ namespace Design_Patterns_Assignment.Repository
 {
     internal static class Repository
     {
-        internal static IDbRepository Database { get; private set; } = new DbRepository();
+        private static readonly IDbRepository _database = new DbRepository();
 
-        // Using firstRun to simulate switching repository to show that pattern is working as intended
-        internal static void Run(bool firstRun = true)
+        internal static void Run()
         {
-            if (firstRun) Console.WriteLine("-- Repository --");
-            var data = Database.GetDataset();
+            var data = _database.GetDataset();
+            Console.WriteLine("-- Repository --");
             Console.WriteLine($"- {data} -");
 
-            Animal animal;
-            Customer customer = Database.GetCustomer("steve");
-            if (customer != null)
+            Customer customer = _database.GetCustomer("steve");
+            if (customer is null)
             {
-                Console.WriteLine($"{customer.Name} found!");
-                animal = Database.GetAnimal(customer);
-                if (animal != null)
-                {
-                    Console.WriteLine($"{customer.Name} owns {animal.Name}.");
-                    Database.SaveAnimal(animal);
-                }
-                else
-                {
-                    Console.WriteLine($"{customer.Name} has no animals.");
-                }
-
-                Database.SaveCustomer(customer);
-            }
-            else
-            {
-                Console.WriteLine("Customer not found.");
+                Console.WriteLine("Customer not found!");
+                return;
             }
 
-            if (firstRun)
+            Console.WriteLine($"{customer.Name} found!");
+
+            Animal animal = _database.GetAnimal(customer);
+            if (animal is null)
             {
-                Database = new DbRepository2();
-                Run(false);
+                Console.WriteLine($"{customer.Name} has no animals.");
+                return;
             }
+
+            Console.WriteLine($"{customer.Name} owns {animal.Name}.");
+            _database.SaveCustomer(customer);
 
             Console.WriteLine();
         }
