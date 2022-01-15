@@ -28,13 +28,18 @@ namespace Design_Patterns_Assignment.Repository
         // Customer
         public Customer GetCustomer(string name)
             => _dbContext.Customers
-                    .FirstOrDefault((c) => c.Name.ToLower() == name.ToLower());
+                .FirstOrDefault((c) => c.Name.ToLower() == name.ToLower());
 
         public IEnumerable<Customer> GetCustomers()
             => _dbContext.Customers;
 
         public void SaveCustomer(Customer customer)
-            => _dbContext.Customers.Add(customer);
+        {
+            var customerExists = _dbContext.Customers.Find(c => c == customer) != null;
+            if (customerExists) _dbContext.Customers.Remove(customer);
+
+            _dbContext.Customers.Add(customer);
+        }
 
         // Dataset
         public string GetDataset()

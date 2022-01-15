@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Design_Patterns_Assignment.Repository.Data
 {
-    // Simulates a database/data storage for the purpose of the examination
+    // Simulates a data storage for the purpose of the examination
     internal class MockDb
     {
         public List<Customer> Customers { get; set; }
